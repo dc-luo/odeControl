@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import sys
 
 sys.path.append("../")
-from adjoints import *
+from odeControl import *
 
 
 def finiteDifferenceIC(ode_model, x0, u_all):
