@@ -67,7 +67,7 @@ class CumulativeL2Penalty(CumulativeCost):
         return np.zeros(x.shape)
 
     def jacobian_u(self, x, u, t):
-        return 2*(u - self.u0)
+        return self.alpha*2*(u - self.u0)
 
     def eval_all(self, x_all, u_all, t_all):
         diff_trajectory = self.alpha*np.linalg.norm(u_all - self.u0, axis=1)**2

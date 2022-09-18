@@ -2,7 +2,7 @@ import numpy as np
 
 
 def steepestDescentSettings():
-    settings = dict
+    settings = dict()
     settings["max_iter"] = 100
     settings["step_size"] = 1.0
     settings["grad_tol"] = 1e-3
@@ -20,10 +20,10 @@ def steepestDescent(ode_control_problem, x0, u_all_guess, settings):
     du_all = ode_control_problem.evalGradientControl(x_all, u_all, p_all)
 
     grad_norm0 = np.linalg.norm(du_all)
-    cost = ode_control_problem.cost(x_all, u_all)
+    cost_old = ode_control_problem.cost(x_all, u_all)
 
     num_iter = 0
-    print("Iteration 0. Cost = %.3e \t GradNorm = %.3e" %(cost, grad_norm0))
+    print("Iteration 0. Cost = %.3e \t GradNorm = %.3e" %(cost_old, grad_norm0))
 
     while num_iter < max_iter:
         u_all -= step_size * du_all
@@ -34,10 +34,16 @@ def steepestDescent(ode_control_problem, x0, u_all_guess, settings):
         du_all = ode_control_problem.evalGradientControl(x_all, u_all, p_all)
 
         grad_norm = np.linalg.norm(du_all)
-        cost = ode_control_problem.cost(x_all, u_all)
+        cost_new = ode_control_problem.cost(x_all, u_all)
+    
+        fd_cost = (cost_new - cost_old)/step_size
+        grad_cost = np.sum(du_all**2)
+        # print("FD: %.3e, GRAD: %.3e" %(fd_cost, grad_cost))
+
+        cost_old = cost_new
 
         num_iter += 1
-        print("Iteration %d. Cost = %.3e \t GradNorm = %.3e" %(num_iter, cost, grad_norm0))
+        print("Iteration %d. Cost = %.3e \t GradNorm = %.3e" %(num_iter, cost_old, grad_norm))
 
 
         if grad_norm/grad_norm0 < grad_tol:

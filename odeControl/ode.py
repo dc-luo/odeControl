@@ -63,7 +63,7 @@ def forwardEuler(ode_system, x0, u_all, t_all):
         - :code: `t_all` temporal discretiztaion (t0, ..., T)
         - :code: `u_all` control values at time points
     """
-    print("Solve via forward euler")
+    # print("Solve via forward euler")
     dim = x0.shape[0]
     nt = t_all.shape[0] - 1
 
@@ -74,7 +74,7 @@ def forwardEuler(ode_system, x0, u_all, t_all):
     for i in range(nt):
         dt = np.abs(t_all[i+1] - t_all[i])
         x_all[i+1] = x_all[i] + dt * np.array(ode_system(x_all[i], u_all[i], t_all[i]))
-    print("Done")
+    # print("Done")
     return x_all
 
 
