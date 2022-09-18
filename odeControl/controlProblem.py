@@ -178,7 +178,7 @@ class ODEControlModel:
         """
         Evaluates gradient w.r.t. the control variable, full time dependence
         """
-        print("Evaluating control gradient")
+        # print("Evaluating control gradient")
         du_all = np.zeros(u_all.shape)
 
         # For temporal
@@ -193,7 +193,7 @@ class ODEControlModel:
         for terminal_cost in self.terminal_costs:
             du_all[-1] += terminal_cost.jacobian_u(x_all[-1], u_all[-1])
 
-        print("Done")
+        # print("Done")
         return du_all
 
     def evalGradientInitialCondition(self, x_all, u_all, p_all):
