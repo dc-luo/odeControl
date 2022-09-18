@@ -68,7 +68,16 @@ if __name__ == "__main__":
     NT = 10000
 
     np.random.seed(111)
-    sir = SIRModel(BETA, GAMMA)
+    
+    use_jax = True
+
+    if use_jax:
+        print("Using jax version of model")
+        sir = SIRModelJax(BETA, GAMMA)
+    else:
+        print("Using original version of model")
+        sir = SIRModel(BETA, GAMMA)
+
     t_all = np.linspace(0, T_MAX, NT+1)
     u_all = np.zeros((NT+1, DIM))
     x_target = np.zeros(DIM)

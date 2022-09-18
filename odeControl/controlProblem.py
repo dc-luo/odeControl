@@ -178,13 +178,13 @@ class ODEControlModel:
         """
         Evaluates gradient w.r.t. the control variable, full time dependence
         """
-
+        print("Evaluating control gradient")
         du_all = np.zeros(u_all.shape)
 
         # For temporal
         for i in range(len(self.t_all)-1):
             dt_curr = np.abs(self.t_all[i+1] - self.t_all[i])
-            odeJ = self.ode.jacobian_u(x_all[i], u_all[i], self.t_all[i])
+            odeJ = np.array(self.ode.jacobian_u(x_all[i], u_all[i], self.t_all[i]))
             du_all[i] -= odeJ.T @ p_all[i] * dt_curr
             for cumulative_cost in self.cumulative_costs:
                 du_all[i] += cumulative_cost.jacobian_u(x_all[i], u_all[i], self.t_all[i]) * dt_curr
@@ -193,6 +193,7 @@ class ODEControlModel:
         for terminal_cost in self.terminal_costs:
             du_all[-1] += terminal_cost.jacobian_u(x_all[-1], u_all[-1])
 
+        print("Done")
         return du_all
 
     def evalGradientInitialCondition(self, x_all, u_all, p_all):
@@ -216,15 +217,9 @@ class ODEControlModel:
         x = xu[:self.state_dim]
         u = xu[self.state_dim:]
 
-        adjoint_rhs = self.ode.adjointSystem(p, x, u, t)
+        adjoint_rhs = np.array(self.ode.adjointSystem(p, x, u, t))
         for cumulative_cost in self.cumulative_costs:
             adjoint_rhs -= cumulative_cost.jacobian_x(x, u, t)
 
         return adjoint_rhs
-
-
-
-
-
-
 
