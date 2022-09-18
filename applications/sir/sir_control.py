@@ -2,14 +2,15 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 import sys
-sys.path.append("../")
+sys.path.append("../../")
 from odeControl import *
 
-def plotSolution(x_all, u_all, t_all, label):
+def plotSolution(x_all, u_all, t_all, x_target, label):
     plt.figure(figsize=(12,8))
     for i in range(3):
         plt.subplot(311+i)
         plt.plot(t_all, x_all[:,i])
+        plt.plot(t_all, x_target[i]*np.ones(t_all.shape), '--r')
         plt.title("%s state %d" %(label, i))
         plt.ylim([0.0, 1.0])
     plt.tight_layout()
@@ -51,7 +52,7 @@ if __name__ == "__main__":
     
     # solve initial
     x_all = ode_model.solveFwd(x0, u_all)
-    plotSolution(x_all, u_all, t_all, "initial")
+    plotSolution(x_all, u_all, t_all, x_target, "initial")
         
     settings = steepestDescentSettings()
     settings["step_size"] = 0.1
@@ -61,6 +62,6 @@ if __name__ == "__main__":
     x_all = ode_model.solveFwd(x0, u_opt)
 
 
-    plotSolution(x_all, u_all, t_all, "final")
+    plotSolution(x_all, u_all, t_all, x_target, "final")
 
     plt.show() 
