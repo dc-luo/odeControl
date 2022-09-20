@@ -6,12 +6,14 @@ def steepestDescentSettings():
     settings["max_iter"] = 100
     settings["step_size"] = 1.0
     settings["grad_tol"] = 1e-3
+    settings["verbose"] = False
     return settings
 
 def steepestDescent(ode_control_problem, x0, u_all_guess, settings):
     max_iter = settings["max_iter"]
     step_size = settings["step_size"]
     grad_tol = settings["grad_tol"]
+    verbose = settings["verbose"]
 
     # Evaluate solves and gradients at initial guess
     u_all = u_all_guess
@@ -38,7 +40,8 @@ def steepestDescent(ode_control_problem, x0, u_all_guess, settings):
     
         fd_cost = (cost_new - cost_old)/step_size
         grad_cost = np.sum(du_all**2)
-        # print("FD: %.3e, GRAD: %.3e" %(fd_cost, grad_cost))
+        if verbose:
+            print("FD: %.3e, GRAD: %.3e" %(fd_cost, grad_cost))
 
         cost_old = cost_new
 

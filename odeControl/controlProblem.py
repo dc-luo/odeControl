@@ -81,31 +81,41 @@ class CumulativeL2Penalty(CumulativeCost):
 
 
 class CumulativeL2Misfit(CumulativeCost):
-    def __init__(self, x_target, alpha=1.0):
+    def __init__(self, x_target, alpha=1.0, W=None):
         self.x_target = x_target
         self.alpha = alpha
+        self.W = W # Weighting matrix
 
     def eval(self, x, u, t):
-        return self.alpha*np.linalg.norm(x - self.x_target)**2
+        if self.W is None:
+            return self.alpha*np.linalg.norm(x - self.x_target)**2
+        else:
+            raise NotImplementedError("Currently not implemented with nonzero weight")
 
     def jacobian_x(self, x, u, t):
-        return 2*self.alpha*(x - self.x_target)
+        if self.W is None:
+            return 2*self.alpha*(x - self.x_target)
+        else:
+            raise NotImplementedError("Currently not implemented with nonzero weight")
 
     def jacobian_u(self, x, u, t):
         return np.zeros(u.shape)
 
     def eval_all(self, x_all, u_all, t_all):
-        assert x_all.shape[0] == t_all.shape[0]
-        assert x_all.shape[1] == self.x_target.shape[0]
-        diff_trajectory = self.alpha*np.linalg.norm(x_all - self.x_target, axis=1)**2
+        if self.W is None:
+            assert x_all.shape[0] == t_all.shape[0]
+            assert x_all.shape[1] == self.x_target.shape[0]
+            diff_trajectory = self.alpha*np.linalg.norm(x_all - self.x_target, axis=1)**2
 
-        dts = t_all[1:] - t_all[:-1]
+            dts = t_all[1:] - t_all[:-1]
 
-        # Integration by trapezoidal rule
-        integral = np.inner(diff_trajectory[:-1], 0.5*dts)
-        integral += np.inner(diff_trajectory[1:], 0.5*dts)
+            # Integration by trapezoidal rule
+            integral = np.inner(diff_trajectory[:-1], 0.5*dts)
+            integral += np.inner(diff_trajectory[1:], 0.5*dts)
 
-        return integral
+            return integral
+        else:
+            raise NotImplementedError("Currently not implemented with nonzero weight")
 
 class TerminalL2Misfit(TerminalCost):
     def __init__(self, x_target, alpha=1.0):
