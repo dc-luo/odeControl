@@ -40,6 +40,10 @@ class ODESystemJax(ODESystem):
         """ 
         return self.compiled_ode_form(x,u,t)
 
+    def linearizedSystem(self, q, x, u, t):
+        rhs = self.jacobian_x(x,u,t) @ q
+        return rhs 
+
     def adjointSystem(self, p, x, u, t):
         # t0 = time.time()
         rhs = self.jacobian_x(x, u, t).T @ p
